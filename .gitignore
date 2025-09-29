@@ -1,0 +1,12 @@
+# Créer le .gitignore
+code .gitignore
+# (colle le contenu multi-plateforme)
+
+# Ajouter au commit
+git add .gitignore
+
+# Commit rapide
+git commit -m "Add .gitignore for cross-platform development"
+
+# Push la branche Phase 2
+git push origin feature/phase2-moddata-storage
