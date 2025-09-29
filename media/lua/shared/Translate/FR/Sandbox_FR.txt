@@ -1,0 +1,3 @@
+Sandbox_FR = {
+    Sandbox_BookScanner = "Book Scanner",
+}

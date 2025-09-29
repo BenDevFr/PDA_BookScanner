@@ -1,0 +1,6 @@
+name=HephasStalkerPDA_BookScanner
+id=HephasStalkerPDA_BookScanner
+authors=VotreNom
+poster=poster.png
+description=Scan books with your Stalker PDA to read them later without carrying them.
+requires=HephasStalkerPDA

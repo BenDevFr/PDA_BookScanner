@@ -1,0 +1,21 @@
+VERSION = 1,
+
+-- Sandbox options for BookScanner
+-- These options affect gameplay rules and can only be modified at world creation
+
+-- Future options examples:
+-- option BookScanner.ConsumeBookOnScan {
+--     type = boolean,
+--     default = false,
+--     page = BookScanner,
+--     translation = BookScanner_ConsumeBookOnScan,
+-- }
+
+-- option BookScanner.MaxBooksPerPDA {
+--     type = integer,
+--     default = 100,
+--     min = 1,
+--     max = 1000,
+--     page = BookScanner,
+--     translation = BookScanner_MaxBooksPerPDA,
+-- }
