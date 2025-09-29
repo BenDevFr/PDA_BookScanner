@@ -27,32 +27,52 @@ BookScanner.Config.SOUNDS = {
 -- Current language (auto-detected)
 BookScanner.Config.currentLanguage = "EN"
 
--- Debug mode (modifiable via ModOptions)
-BookScanner.Config.DEBUG_MODE = false
-
 -- Auto-detect game language
 function BookScanner.Config.detectLanguage()
-	-- Vérifier que Translator existe
-	if not Translator or not Translator.getLanguage then
-		BookScanner.Config.currentLanguage = "EN"
-		return
+	-- Method 1: Try Core language (most reliable at startup)
+	if Core and Core.getInstance then
+		local coreInstance = Core.getInstance()
+		if coreInstance and coreInstance.getOptionLanguageName then
+			local lang = coreInstance:getOptionLanguageName()
+			if lang then
+				if lang == "FR" or lang == "Francais" then
+					BookScanner.Config.currentLanguage = "FR"
+					return
+				elseif lang == "DE" or lang == "Deutsch" then
+					BookScanner.Config.currentLanguage = "DE"
+					return
+				else
+					BookScanner.Config.currentLanguage = "EN"
+					return
+				end
+			end
+		end
 	end
 
-	local gameLanguage = Translator.getLanguage()
-
-	if gameLanguage == "FR" then
-		BookScanner.Config.currentLanguage = "FR"
-	elseif gameLanguage == "DE" then
-		BookScanner.Config.currentLanguage = "DE"
-	else
-		BookScanner.Config.currentLanguage = "EN"
+	-- Method 2: Try Translator (may not be available at startup)
+	if Translator and Translator.getLanguage then
+		local languageObject = Translator.getLanguage()
+		if languageObject and languageObject.getName then
+			local gameLanguage = languageObject:getName()
+			if gameLanguage == "FR" then
+				BookScanner.Config.currentLanguage = "FR"
+				return
+			elseif gameLanguage == "DE" then
+				BookScanner.Config.currentLanguage = "DE"
+				return
+			end
+		end
 	end
+
+	-- Fallback: English
+	BookScanner.Config.currentLanguage = "EN"
 end
 
 -- Get translated text via getText()
 function BookScanner.Config.getText(key, ...)
 	local translatedText = getText(key)
 
+	-- Format with arguments if provided
 	if select("#", ...) > 0 then
 		return string.format(translatedText, ...)
 	end
@@ -60,30 +80,10 @@ function BookScanner.Config.getText(key, ...)
 	return translatedText
 end
 
--- Enable/disable debug mode
-function BookScanner.Config.setDebugMode(enabled)
-	BookScanner.Config.DEBUG_MODE = enabled
-
-	if BookScanner.Logger then
-		if enabled then
-			BookScanner.Logger.enableDebug()
-		else
-			BookScanner.Logger.disableDebug()
-		end
-	end
-end
-
--- Enable/disable verbose logs
-function BookScanner.Config.setVerboseMode(enabled)
-	if BookScanner.Logger then
-		BookScanner.Logger.verboseMode = enabled
-	end
-end
-
 -- Load Sandbox options (if available)
 function BookScanner.Config.loadSandboxOptions()
 	if SandboxVars and SandboxVars.BookScanner then
-		-- Future options here
+		-- Future options here (e.g., destroy book on scan, storage limit, etc.)
 	end
 end
 

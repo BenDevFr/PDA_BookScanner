@@ -1,72 +1,81 @@
 -- media/lua/shared/BookScanner/BSLogger.lua
--- Centralized logging system for BookScanner
+-- Centralized logging system with auto debug detection
 
 BookScanner = BookScanner or {}
 BookScanner.Logger = BookScanner.Logger or {}
 
--- Log levels
-BookScanner.Logger.Level = {
-    ERROR = 1,
-    INFO = 2,
-    DEBUG = 3
-}
+-- Detect if game is in debug mode
+local function isDebugMode()
+	-- Check multiple debug indicators
+	if getDebug and getDebug() then
+		return true
+	end
+	if DebugOptions and DebugOptions.instance then
+		return true
+	end
+	if isDebugEnabled and isDebugEnabled() then
+		return true
+	end
+	return false
+end
 
--- Current level
-BookScanner.Logger.currentLevel = BookScanner.Logger.Level.INFO
-BookScanner.Logger.verboseMode = false
+-- Auto-detect debug mode and set log level
+BookScanner.Logger.debugMode = isDebugMode()
+BookScanner.Logger.logLevel = BookScanner.Logger.debugMode and 3 or 1
 
--- Constant prefix
-local LOG_PREFIX = "[BookScanner]"
+-- Log levels:
+-- 1 = Normal (user) - essential messages only
+-- TODO 2 = Debug - detailed technical info
+-- 3 = Verbose - extremely detailed info
 
--- Standard log
+-- Normal log (always visible)
 function BookScanner.Logger.log(message)
-    if BookScanner.Logger.currentLevel >= BookScanner.Logger.Level.INFO then
-        print(LOG_PREFIX .. " " .. tostring(message))
-    end
+	if BookScanner.Logger.logLevel >= 1 then
+		print("[BookScanner] " .. tostring(message))
+	end
 end
 
--- Error log (always shown)
-function BookScanner.Logger.error(message)
-    print(LOG_PREFIX .. " ERROR: " .. tostring(message))
-end
-
--- Warning log (always shown)
-function BookScanner.Logger.warn(message)
-    print(LOG_PREFIX .. " WARNING: " .. tostring(message))
-end
-
--- Debug log (only if enabled)
+-- Debug log (only in debug mode)
 function BookScanner.Logger.debug(message)
-    if BookScanner.Logger.currentLevel >= BookScanner.Logger.Level.DEBUG then
-        print(LOG_PREFIX .. " [DEBUG] " .. tostring(message))
-    end
+	if BookScanner.Logger.logLevel >= 2 then
+		print("[BookScanner:DEBUG] " .. tostring(message))
+	end
 end
 
--- Verbose log (ultra detailed, for hardcore dev)
+-- Verbose log (only in debug mode, ultra detailed)
 function BookScanner.Logger.verbose(message)
-    if BookScanner.Logger.verboseMode and BookScanner.Logger.currentLevel >= BookScanner.Logger.Level.DEBUG then
-        print(LOG_PREFIX .. " [VERBOSE] " .. tostring(message))
-    end
+	if BookScanner.Logger.logLevel >= 3 then
+		print("[BookScanner:VERBOSE] " .. tostring(message))
+	end
+end
+
+-- Warning (always visible)
+function BookScanner.Logger.warn(message)
+	print("[BookScanner:WARN] " .. tostring(message))
+end
+
+-- Error (always visible)
+function BookScanner.Logger.error(message)
+	print("[BookScanner:ERROR] " .. tostring(message))
 end
 
 -- Visual separator
 function BookScanner.Logger.separator()
-    print(LOG_PREFIX .. " " .. string.rep("=", 50))
+	if BookScanner.Logger.logLevel >= 2 then
+		print("[BookScanner] " .. string.rep("-", 60))
+	end
 end
 
 -- Section header
 function BookScanner.Logger.section(title)
-    print(LOG_PREFIX .. " === " .. tostring(title) .. " ===")
+	if BookScanner.Logger.logLevel >= 2 then
+		print("[BookScanner] === " .. title .. " ===")
+	end
 end
 
--- Enable debug mode
-function BookScanner.Logger.enableDebug()
-    BookScanner.Logger.currentLevel = BookScanner.Logger.Level.DEBUG
-    BookScanner.Logger.log("Debug mode enabled")
-end
-
--- Disable debug mode
-function BookScanner.Logger.disableDebug()
-    BookScanner.Logger.currentLevel = BookScanner.Logger.Level.INFO
-    BookScanner.Logger.log("Debug mode disabled")
+-- Initial log
+if BookScanner.Logger.debugMode then
+	BookScanner.Logger.log("Debug mode detected - Full logging enabled")
+else
+	BookScanner.Logger.log("Normal mode - Essential logging only")
 end
