@@ -111,14 +111,14 @@ function BSCore.detectPlayerPDA(player)
 		section("PDA Detection End")
 		return nil
 	elseif #linkedPDAs == 1 then
-		-- Single PDA found (normal case)
-		local pda = linkedPDAs[1]
-		local pdaName = pda:getName()
-		local pdaModData = pda:getModData() -- ✅ Récupérer modData du PDA
-		log("Player's PDA detected - " .. pdaName)
-		verbose("PDA Owner: " .. pdaModData.owner)
-		section("PDA Detection End")
-		return pda
+    -- Single PDA found (normal case)
+    local pda = linkedPDAs[1]
+    local pdaName = pda:getName()
+    local pdaModData = pda:getModData()  -- ✅ Récupérer modData du PDA
+    log("Player's PDA detected - " .. pdaName)
+    verbose("PDA Owner: " .. pdaModData.owner)
+    section("PDA Detection End")
+    return pda
 	else
 		-- Multiple PDAs bound to same owner - MERGE LIBRARIES
 		log("WARNING: Multiple bound PDAs detected (" .. #linkedPDAs .. "), merging libraries...")

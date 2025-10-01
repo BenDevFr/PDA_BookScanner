@@ -3,7 +3,7 @@
 
 require("BookScanner/BSLogger")
 require("BookScanner/BSConfig")
-require("BookScanner/BSUtils")
+
 
 BookScanner = BookScanner or {}
 

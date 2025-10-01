@@ -80,17 +80,15 @@ function BSReadScannedBook:perform()
 		self.character:playSound("CloseMagazine")
 	end
 
-	ISBaseTimedAction.perform(self)
+	-- Skip GTM override for virtual books
+	if self.isVirtual then
+		ISBaseTimedAction.perform(self)
+	else
+		ISReadABook.perform(self)
+	end
 end
 
 function BSReadScannedBook:newFromScan(character, bookFullType)
-	-- Security check: prevent creating virtual books for excluded types
-	if BookScanner.Exclusions.isExcluded(bookFullType) then
-		local reason = BookScanner.Exclusions.getExclusionReason(bookFullType)
-		error("Cannot create virtual book for excluded type: " .. bookFullType .. " (" .. reason .. ")")
-		return nil
-	end
-
 	local virtualBook = InventoryItemFactory.CreateItem(bookFullType)
 
 	if not virtualBook then
