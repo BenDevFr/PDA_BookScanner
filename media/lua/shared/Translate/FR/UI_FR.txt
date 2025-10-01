@@ -22,4 +22,10 @@ UI_FR = {
     UI_BookScanner_ContextScan = "Scanner avec PDA",
     UI_BookScanner_ContextAlreadyScanned = "Déjà scanné",
     UI_BookScanner_ContextLibrary = "Bibliothèque (%d livres)",
+
+    UI_BookScanner_ConnectPDA = "Se connecter à ce PDA",
+    UI_BookScanner_ConnectSuccess = "Connecté au PDA",
+    UI_BookScanner_ConnectFailed = "Échec de connexion au PDA",
+    UI_BookScanner_PDAOwner = "PDA de %s",
+    UI_BookScanner_NoPDAPersonal = "Aucun PDA personnel trouvé. Connecte-toi à un PDA d'abord.",
 }

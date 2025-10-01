@@ -21,7 +21,9 @@ require("BookScanner/BSUtils")
 log("Loading client modules...")
 require("BookScanner/BSCore")
 require("BookScanner/BSBooks")
+require("BookScanner/BSStorage")
 require("BookScanner/BSContext")
+require("BookScanner/BSReadScannedBook")
 
 -- Load tests only in debug mode
 if BookScanner.Logger.debugMode then
