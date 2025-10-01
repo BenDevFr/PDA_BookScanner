@@ -1,81 +1,42 @@
--- media/lua/shared/BookScanner/BSLogger.lua
--- Centralized logging system with auto debug detection
+-- media/lua/client/BookScanner/BSLogger.lua
+-- Logging system with level-based filtering
 
 BookScanner = BookScanner or {}
-BookScanner.Logger = BookScanner.Logger or {}
 
--- Detect if game is in debug mode
-local function isDebugMode()
-	-- Check multiple debug indicators
-	if getDebug and getDebug() then
-		return true
+local BSLogger = {}
+BookScanner.Logger = BSLogger
+
+-- Configuration
+BSLogger.debugMode = true -- Set to false for production
+
+-- Log format helpers
+local function formatLog(level, message)
+	return "[BookScanner" .. (level and ":" .. level or "") .. "] " .. message
+end
+
+-- Core logging functions
+function BSLogger.log(message)
+	print(formatLog(nil, message))
+end
+
+function BSLogger.error(message)
+	print(formatLog("ERROR", message))
+end
+
+function BSLogger.debug(message)
+	if not BSLogger.debugMode then
+		return
 	end
-	if DebugOptions and DebugOptions.instance then
-		return true
-	end
-	if isDebugEnabled and isDebugEnabled() then
-		return true
-	end
-	return false
+	print(formatLog("DEBUG", message))
 end
 
--- Auto-detect debug mode and set log level
-BookScanner.Logger.debugMode = isDebugMode()
-BookScanner.Logger.logLevel = BookScanner.Logger.debugMode and 3 or 1
-
--- Log levels:
--- 1 = Normal (user) - essential messages only
--- TODO 2 = Debug - detailed technical info
--- 3 = Verbose - extremely detailed info
-
--- Normal log (always visible)
-function BookScanner.Logger.log(message)
-	if BookScanner.Logger.logLevel >= 1 then
-		print("[BookScanner] " .. tostring(message))
-	end
+-- Visual separators
+function BSLogger.separator()
+	BSLogger.log("------------------------------------------------------------")
 end
 
--- Debug log (only in debug mode)
-function BookScanner.Logger.debug(message)
-	if BookScanner.Logger.logLevel >= 2 then
-		print("[BookScanner:DEBUG] " .. tostring(message))
-	end
+function BSLogger.section(title)
+	BSLogger.log("=== " .. title .. " ===")
 end
 
--- Verbose log (only in debug mode, ultra detailed)
-function BookScanner.Logger.verbose(message)
-	if BookScanner.Logger.logLevel >= 3 then
-		print("[BookScanner:VERBOSE] " .. tostring(message))
-	end
-end
-
--- Warning (always visible)
-function BookScanner.Logger.warn(message)
-	print("[BookScanner:WARN] " .. tostring(message))
-end
-
--- Error (always visible)
-function BookScanner.Logger.error(message)
-	print("[BookScanner:ERROR] " .. tostring(message))
-end
-
--- Visual separator
-function BookScanner.Logger.separator()
-	if BookScanner.Logger.logLevel >= 2 then
-		print("[BookScanner] " .. string.rep("-", 60))
-	end
-end
-
--- Section header
-function BookScanner.Logger.section(title)
-	if BookScanner.Logger.logLevel >= 2 then
-		print("[BookScanner] === " .. title .. " ===")
-	end
-end
-
--- Initial log
-if BookScanner.Logger.debugMode then
-	BookScanner.Logger.log("Debug mode detected - Full logging enabled")
-else
-	BookScanner.Logger.log("Normal mode - Essential logging only")
-end
+BSLogger.log("BSLogger.lua loaded - Debug mode: " .. tostring(BSLogger.debugMode))
