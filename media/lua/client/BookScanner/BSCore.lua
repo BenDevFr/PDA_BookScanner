@@ -14,7 +14,6 @@ BookScanner.Core = BSCore
 local log = BookScanner.Logger.log
 local error = BookScanner.Logger.error
 local debug = BookScanner.Logger.debug
-local verbose = BookScanner.Logger.verbose
 local section = BookScanner.Logger.section
 
 -- Local utils imports
@@ -33,12 +32,12 @@ local function getStableOwner(player)
 	if gameMode == "Multiplayer" then
 		-- Multiplayer: Use Steam username (stable across characters)
 		local owner = player:getUsername()
-		verbose("Owner (Multi): " .. owner)
+		debug("Owner (Multi): " .. owner)
 		return owner
 	else
 		-- Solo: Use save ID (stable for this save game)
 		local owner = getWorld():getWorld()
-		verbose("Owner (Solo): " .. owner)
+		debug("Owner (Solo): " .. owner)
 		return owner
 	end
 end
@@ -111,14 +110,14 @@ function BSCore.detectPlayerPDA(player)
 		section("PDA Detection End")
 		return nil
 	elseif #linkedPDAs == 1 then
-    -- Single PDA found (normal case)
-    local pda = linkedPDAs[1]
-    local pdaName = pda:getName()
-    local pdaModData = pda:getModData()  -- ✅ Récupérer modData du PDA
-    log("Player's PDA detected - " .. pdaName)
-    verbose("PDA Owner: " .. pdaModData.owner)
-    section("PDA Detection End")
-    return pda
+		-- Single PDA found (normal case)
+		local pda = linkedPDAs[1]
+		local pdaName = pda:getName()
+		local pdaModData = pda:getModData()
+		log("Player's PDA detected - " .. pdaName)
+		debug("PDA Owner: " .. pdaModData.owner)
+		section("PDA Detection End")
+		return pda
 	else
 		-- Multiple PDAs bound to same owner - MERGE LIBRARIES
 		log("WARNING: Multiple bound PDAs detected (" .. #linkedPDAs .. "), merging libraries...")

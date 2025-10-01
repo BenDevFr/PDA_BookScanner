@@ -1,4 +1,4 @@
--- media/lua/client/BookScanner/BSLogger.lua
+-- media/lua/shared/BookScanner/BSLogger.lua
 -- Logging system with level-based filtering
 
 BookScanner = BookScanner or {}

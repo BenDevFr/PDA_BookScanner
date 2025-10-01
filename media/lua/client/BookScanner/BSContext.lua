@@ -16,7 +16,6 @@ BookScanner.Context = BSContext
 -- Local imports
 local log = BookScanner.Logger.log
 local debug = BookScanner.Logger.debug
-local verbose = BookScanner.Logger.verbose
 local section = BookScanner.Logger.section
 local error = BookScanner.Logger.error
 local formatPlayerLog = BookScanner.Utils.formatPlayerLog
@@ -44,7 +43,7 @@ function BSContext.scanBook(item, player)
 	debug("Book: " .. bookName .. " (" .. bookType .. ")")
 
 	-- Check PDA
-	verbose("Checking for PDA...")
+	debug("Checking for PDA...")
 	local pda = BookScanner.Core.detectPDA(player)
 	if not pda then
 		player:Say(BookScanner.Config.getText("UI_BookScanner_NoPDAPersonal"))
@@ -53,7 +52,7 @@ function BSContext.scanBook(item, player)
 	end
 
 	-- Check scannability
-	verbose("Checking book scannability...")
+	debug("Checking book scannability...")
 	if not BookScanner.Books.isBookScannable(item) then
 		player:Say(BookScanner.Config.getText("UI_BookScanner_NotScannable"))
 		log("FAILED: Book not scannable")
@@ -61,7 +60,7 @@ function BSContext.scanBook(item, player)
 	end
 
 	-- Extract info
-	verbose("Extracting book info...")
+	debug("Extracting book info...")
 	local bookInfo = BookScanner.Books.extractBookInfo(item)
 	if not bookInfo then
 		error("Unable to extract book info")
@@ -69,7 +68,7 @@ function BSContext.scanBook(item, player)
 	end
 
 	-- Check if already scanned
-	verbose("Checking for duplicates...")
+	debug("Checking for duplicates...")
 	if BookScanner.Storage.isBookScanned(pda, bookInfo.fullType) then
 		player:Say(BookScanner.Config.getText("UI_BookScanner_AlreadyScanned"))
 		log("FAILED: Already scanned - " .. bookName)
@@ -77,7 +76,7 @@ function BSContext.scanBook(item, player)
 	end
 
 	-- Save to PDA ModData
-	verbose("Saving to PDA ModData...")
+	debug("Saving to PDA ModData...")
 	local saved = BookScanner.Storage.saveScannedBook(pda, bookInfo)
 
 	if not saved then
@@ -108,17 +107,17 @@ function BSContext.addScanBookMenu(playerIndex, context, items)
 		return
 	end
 
-	verbose(formatPlayerLog(player, "Book context menu"))
+	debug(formatPlayerLog(player, "Book context menu"))
 
 	-- Check PDA
 	local pda = BookScanner.Core.detectPDA(player)
 	if not pda then
-		verbose("No PDA, no menu")
+		debug("No PDA, no menu")
 		return
 	end
 
 	-- Process items
-	verbose("Processing selected items...")
+	debug("Processing selected items...")
 	local itemsArray = items
 	if not items.get then
 		itemsArray = ISInventoryPane.getActualItems(items)
@@ -130,7 +129,7 @@ function BSContext.addScanBookMenu(playerIndex, context, items)
 	end
 
 	local itemCount = itemsArray.size and itemsArray:size() or #itemsArray
-	verbose("Item count: " .. itemCount)
+	debug("Item count: " .. itemCount)
 
 	local scannableBookFound = false
 	local targetItem = nil
@@ -151,7 +150,7 @@ function BSContext.addScanBookMenu(playerIndex, context, items)
 		if item and item.getDisplayName then
 			local itemName = item:getDisplayName()
 			local itemType = item:getType()
-			verbose("Item: " .. itemName .. " (" .. itemType .. ")")
+			debug("Item: " .. itemName .. " (" .. itemType .. ")")
 
 			if BookScanner.Books.isBookScannable(item) then
 				debug("Scannable book: " .. itemName)
@@ -191,7 +190,7 @@ function BSContext.addConnectPDAMenu(playerIndex, context, items)
 		return
 	end
 
-	verbose(formatPlayerLog(player, "PDA context menu"))
+	debug(formatPlayerLog(player, "PDA context menu"))
 
 	-- Process items
 	local itemsArray = items
@@ -227,7 +226,7 @@ function BSContext.addConnectPDAMenu(playerIndex, context, items)
 
 				if modData.owner then
 					-- PDA already bound - show PDA name (grayed out, used as separator)
-					local pdaName = item:getName() -- "PDA de ShadZimmer"
+					local pdaName = item:getName()
 					local option = context:addOption(pdaName, item, nil)
 					option.notAvailable = true
 
