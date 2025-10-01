@@ -1,5 +1,8 @@
+--[[
 -- media/lua/client/BookScanner/BSExclusions.lua
--- Generic exclusion system for books that cannot be scanned
+-- COMMENTED OUT - Will be reintegrated in Phase 3 after refactor
+-- This file caused bugs with nil category and PDA name issues
+-- Kept as reference for exclusion system architecture
 
 require("BookScanner/BSLogger")
 
@@ -93,3 +96,4 @@ function BookScanner.Exclusions.count()
 end
 
 log("BSExclusions.lua loaded - " .. BookScanner.Exclusions.count() .. " books excluded")
+--]]
