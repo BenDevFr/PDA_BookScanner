@@ -45,8 +45,20 @@ function BSStorage.bindPDAToPlayer(pda, player)
 	end
 
 	-- Update PDA name to show ownership
-	local playerName = player:getUsername()
-	local pdaName = BookScanner.Config.getText("UI_BookScanner_PDAName", playerName)
+	local displayName
+	local gameMode = getWorld():getGameMode()
+
+	if gameMode == "Multiplayer" then
+		-- Multiplayer: Use Steam username
+		displayName = player:getUsername()
+	else
+		-- Solo: Use character's full name (forename + surname)
+		local forename = player:getDescriptor():getForename()
+		local surname = player:getDescriptor():getSurname()
+		displayName = forename .. " " .. surname
+	end
+
+	local pdaName = BookScanner.Config.getText("UI_BookScanner_PDAName", displayName)
 	pda:setName(pdaName)
 
 	log("PDA bound to player: " .. owner)
@@ -75,11 +87,19 @@ function BSStorage.unbindPDA(pda)
 	modData.owner = nil
 	modData.boundTimestamp = nil
 
-	-- Reset PDA name to default
-	pda:setName(BookScanner.Config.PDA_BASE_NAME)
-
-	log("PDA unbound from: " .. previousOwner)
-	debug("PDA name reset to default")
+	-- Reset PDA name to original item name
+	local itemScript = getScriptManager():getItem(pda:getFullType())
+	if itemScript then
+		local originalName = itemScript:getDisplayName()
+		pda:setName(originalName)
+		log("PDA unbound from: " .. previousOwner)
+		debug("PDA name reset to: " .. originalName)
+	else
+		error("Could not retrieve original item name for: " .. pda:getFullType())
+		pda:setName("PDA") -- Fallback
+		log("PDA unbound from: " .. previousOwner)
+		debug("PDA name reset to fallback: PDA")
+	end
 
 	return true
 end
@@ -111,7 +131,7 @@ function BSStorage.saveScannedBook(pda, bookInfo)
 	modData.scannedBooks[fullType] = {
 		fullType = bookInfo.fullType,
 		category = bookInfo.category,
-		timestamp = os.time()
+		timestamp = os.time(),
 	}
 
 	debug("Book saved to ModData: " .. fullType)

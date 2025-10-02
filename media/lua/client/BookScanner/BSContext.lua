@@ -42,6 +42,18 @@ function BSContext.scanBook(item, player)
 	local bookType = item:getType()
 	debug("Book: " .. bookName .. " (" .. bookType .. ")")
 
+	-- Check if book is in a container (not main inventory)
+	local itemContainer = item:getContainer()
+	local playerInventory = player:getInventory()
+
+	if itemContainer and itemContainer ~= playerInventory then
+		debug("Book in container, transferring to main inventory...")
+		-- Transfer item to player's main inventory
+		itemContainer:Remove(item)
+		playerInventory:AddItem(item)
+		log("Book transferred to main inventory")
+	end
+
 	-- Check PDA
 	debug("Checking for PDA...")
 	local pda = BookScanner.Core.detectPDA(player)
@@ -100,6 +112,7 @@ function BSContext.scanBook(item, player)
 end
 
 -- Add "Scan with PDA" option to books
+-- Add "Scan with PDA" option to books
 function BSContext.addScanBookMenu(playerIndex, context, items)
 	local player = getSpecificPlayer(playerIndex)
 	if not player then
@@ -148,15 +161,21 @@ function BSContext.addScanBookMenu(playerIndex, context, items)
 		end
 
 		if item and item.getDisplayName then
-			local itemName = item:getDisplayName()
-			local itemType = item:getType()
-			debug("Item: " .. itemName .. " (" .. itemType .. ")")
+			-- OPTIMIZATION: Early exit if not Literature category
+			local itemCategory = item:getCategory()
+			if itemCategory == "Literature" then
+				local itemName = item:getDisplayName()
+				local itemType = item:getType()
+				debug("Checking Literature item: " .. itemName .. " (" .. itemType .. ")")
 
-			if BookScanner.Books.isBookScannable(item) then
-				debug("Scannable book: " .. itemName)
-				scannableBookFound = true
-				targetItem = item
-				break
+				if BookScanner.Books.isBookScannable(item) then
+					debug("Scannable book found: " .. itemName)
+					scannableBookFound = true
+					targetItem = item
+					break
+				end
+			else
+				debug("Skipping non-Literature item: " .. item:getType())
 			end
 		end
 	end

@@ -1,31 +1,21 @@
 UI_FR = {
-    -- ModOptions - Niveau de log
-    UI_BookScanner_LogLevel = "Niveau de Log",
-    UI_BookScanner_LogLevel_Tooltip = "Contrôle la quantité d'informations affichées dans la console. Modifiable en jeu.",
-    UI_BookScanner_LogLevel_Normal = "Normal (utilisateur)",
-    UI_BookScanner_LogLevel_Debug = "Debug (développeur)",
-    UI_BookScanner_LogLevel_Verbose = "Verbose (expert)",
-
-    -- Notifications
-    UI_BookScanner_ShowNotifications = "Afficher les Notifications",
-    UI_BookScanner_ShowNotifications_Tooltip = "Affiche un message quand un livre est scanné.",
-
-    -- Messages in-game
+    -- Messages en jeu
     UI_BookScanner_NeedPDA = "J'ai besoin d'un PDA pour scanner ce livre.",
     UI_BookScanner_NotScannable = "Ce n'est pas un livre scannable.",
     UI_BookScanner_AlreadyScanned = "Ce livre est déjà dans ma bibliothèque PDA.",
     UI_BookScanner_ScanSuccess = "Livre scanné: %s",
     UI_BookScanner_NoBooks = "Aucun livre scannable trouvé",
-    UI_BookScanner_BooksFound = "Trouvé %d livre(s) scannable(s)",
+    UI_BookScanner_BooksFound = "%d livre(s) scannable(s) trouvé(s)",
 
     -- Menu contextuel
-    UI_BookScanner_ContextScan = "Scanner avec PDA",
+    UI_BookScanner_ContextScan = "Scanner avec le PDA",
     UI_BookScanner_ContextAlreadyScanned = "Déjà scanné",
     UI_BookScanner_ContextLibrary = "Bibliothèque (%d livres)",
 
+    -- Connexion PDA
     UI_BookScanner_ConnectPDA = "Se connecter à ce PDA",
     UI_BookScanner_ConnectSuccess = "Connecté au PDA",
     UI_BookScanner_ConnectFailed = "Échec de connexion au PDA",
-    UI_BookScanner_PDAOwner = "PDA de %s",
-    UI_BookScanner_NoPDAPersonal = "Aucun PDA personnel trouvé. Connecte-toi à un PDA d'abord.",
+    UI_BookScanner_PDAName = "PDA de %1",
+    UI_BookScanner_NoPDAPersonal = "Aucun PDA personnel trouvé. Connectez-vous d'abord à un PDA.",
 }

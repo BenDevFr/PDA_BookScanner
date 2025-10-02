@@ -1,15 +1,4 @@
 UI_EN = {
-    -- ModOptions - Log Level
-    UI_BookScanner_LogLevel = "Log Level",
-    UI_BookScanner_LogLevel_Tooltip = "Controls the amount of information displayed in the console. Can be changed in-game.",
-    UI_BookScanner_LogLevel_Normal = "Normal (user)",
-    UI_BookScanner_LogLevel_Debug = "Debug (developer)",
-    UI_BookScanner_LogLevel_Verbose = "Verbose (expert)",
-
-    -- Notifications
-    UI_BookScanner_ShowNotifications = "Show Notifications",
-    UI_BookScanner_ShowNotifications_Tooltip = "Shows a message when a book is scanned.",
-
     -- In-game messages
     UI_BookScanner_NeedPDA = "I need a PDA to scan this book.",
     UI_BookScanner_NotScannable = "This is not a scannable book.",
@@ -23,9 +12,10 @@ UI_EN = {
     UI_BookScanner_ContextAlreadyScanned = "Already scanned",
     UI_BookScanner_ContextLibrary = "Library (%d books)",
 
+    -- PDA Connection
     UI_BookScanner_ConnectPDA = "Connect to this PDA",
     UI_BookScanner_ConnectSuccess = "Connected to PDA",
     UI_BookScanner_ConnectFailed = "Failed to connect to PDA",
-    UI_BookScanner_PDAOwner = "PDA of %s",
+    UI_BookScanner_PDAName = "%1's PDA",
     UI_BookScanner_NoPDAPersonal = "No personal PDA found. Connect to a PDA first.",
 }

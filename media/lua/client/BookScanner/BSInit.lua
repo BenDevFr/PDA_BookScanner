@@ -35,5 +35,4 @@ end
 
 separator()
 log("BookScanner initialization complete!")
-log("Language: " .. BookScanner.Config.currentLanguage)
 separator()
