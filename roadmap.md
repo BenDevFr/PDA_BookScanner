@@ -18,15 +18,11 @@
 
 ---
 
-## ✅ Phase 2 - ModData Storage (COMPLETED)
+## ✅ Phase 2 - ModData Storage & Ownership (COMPLETED)
 - Minimal storage (fullType, category, timestamp)
 - Duplicate detection
 - Grayed option if already scanned
 - Save/load persistence
-
----
-
-## ✅ Phase 2.5 - Ownership System (COMPLETED)
 - Multi-context ownership system (solo/multi)
 - "Connect to this PDA" menu
 - Auto-merge multiple libraries
@@ -38,34 +34,39 @@
 - ✅ Scan with bound PDA
 - ✅ Scan impossible without bound PDA
 - ✅ Auto-merge (2-3 PDAs)
+- ✅ PDA naming (solo/multiplayer)
+- ✅ Bind/unbind functionality
+- ✅ Literature category filtering
+- ✅ Auto-transfer from containers
 
 **Fixed bugs**:
 - ✅ BSCore.lua line 118 (modData scope)
 - ✅ PDA menu displaying technical ID instead of visible name
+- ✅ Log system refactor (normal/debug only)
+- ✅ Performance optimization (Literature filter)
 
 ---
 
-## 🚧 Phase 2.75 - Polish (IN PROGRESS)
+## 🚧 Phase 3 - Compatibility & Polish (IN PROGRESS)
 
 ### Immediate implementation
-1. **Clear library (debug)**
-   - Add to BSTests.lua
-   - Context menu "🗑️ Clear PDA Library"
-   - Uses `BSStorage.clearAllBooks()`
+1. **GTM Integration**
+   - Integrate BSExclusions (Gyde's Trait Magazines compatibility)
+   - Exclude GTM books from scanning
 
-2. **Scan All**
-   - New option "Scan all books"
-   - Loop through scannable books, skip duplicates
-   - Feedback: "X scanned, Y skipped"
+2. **Debug Mode Cleanup**
+   - Conditionalize all test menu options by `debugMode`
+   - Remove auto-exec tests in production
+   - Clean up BSTests.lua for release
 
-3. **Library Menu (preview)**
-   - On PDA: "Library (X books)"
-   - Display simple list of scanned books
-   - No reading yet (Phase 3)
+3. **Library Menu Enhancements**
+   - Clear library option (debug only)
+   - "Scan All" functionality
+   - Library preview on PDA
 
 ---
 
-## 📋 Phase 3 - Library Interface (PLANNED)
+## 📋 Phase 4 - Library Interface (PLANNED)
 
 ### Complete UI
 - Dedicated book list window
@@ -82,7 +83,7 @@
 
 ---
 
-## 🔮 Phase 4+ - Advanced Features (FUTURE)
+## 🔮 Phase 5+ - Advanced Features (FUTURE)
 
 ### Data transfer
 - **Memory cards**: Export/import library
@@ -108,10 +109,10 @@
 ## 🐛 Known Bugs / To Fix
 
 ### Minor (non-blocking)
-- **PDA name**: Displays "ShadZimmer" instead of "Shad Zimmer"
-  - Cause: `getUsername()` returns without space
-  - Possible solution: Parse and reformat, or use character name?
-  - Priority: Low
+- **UIreshaded log interception**: All logs prefixed with `[UIreshaded]`
+  - Cause: UIreshaded mod intercepts logging system
+  - Impact: Visual only, no functional issue
+  - Priority: Low (investigate Phase 3)
 
 ### Log warnings
 - `RecipeManager -> Cannot create recipe for movable item: Base.Hephas_StalkerPDA`
@@ -127,6 +128,8 @@
 - [x] Scan with bound PDA
 - [x] Scan without PDA (menu absent)
 - [x] Auto-merge multi-PDAs
+- [x] Literature filter (250+ ammo items)
+- [x] Auto-transfer from containers
 - [ ] Clear library (debug)
 - [ ] Scan All
 - [ ] Persistence after death/respawn
@@ -143,6 +146,7 @@
 - [ ] Scan 100+ books (limit?)
 - [ ] Mod disabled then re-enabled
 - [ ] Compatibility with other book mods
+- [ ] GTM exclusions working
 
 ---
 
@@ -165,19 +169,22 @@
 - Ownership based on `getUsername()` (multi) or save ID (solo) ✅
 - Auto-merge rather than manual menu ✅
 - No mod sorting (technically impossible) ✅
+- Dynamic translation system (getText) ✅
+- Literature category early filtering ✅
 
 ---
 
 ## 📦 Release Checklist
 
 ### Before Steam Workshop publication
-- [ ] Comment/remove BSTests.lua
+- [ ] Conditionalize BSTests.lua by debugMode
 - [ ] Verify complete translations (FR/EN)
 - [ ] Screenshots/demo video
 - [ ] End-user README.md
 - [ ] CHANGELOG.md
 - [ ] Test in clean game (without debug)
 - [ ] Verify dedicated server compatibility
+- [ ] GTM compatibility verified
 
 ### Workshop metadata
 - Clear mod description
@@ -187,7 +194,27 @@
 
 ---
 
+## 🔗 Compatibility
+
+### Required
+- ✅ Hephas Stalker PDA
+
+### Optional / Tested
+- 🚧 Gyde's Trait Magazines (GTM) - Phase 3
+- ✅ Multi-language support
+- ✅ Splitscreen/Multiplayer
+
+---
+
 ## 🔄 Version History
+
+### v1.0.0-phase2.x (10/03/2025)
+- Log system optimization (normal/debug only)
+- Literature category early filtering
+- Auto-transfer from containers
+- PDA naming fixes (solo/multiplayer)
+- Dynamic translation system
+- Performance improvements
 
 ### v1.0.0-phase2.5 (09/30/2025)
 - Multi-context ownership system
@@ -207,4 +234,4 @@
 
 ---
 
-*Last updated: 09/30/2025 21:30*
+*Last updated: 10/03/2025*
