@@ -32,10 +32,10 @@ function BSTests.testPDADetection(playerIndex)
 	local pda = BookScanner.Core.detectPDA(player)
 
 	if pda then
-		player:Say("✅ PDA detected: " .. pda:getDisplayName())
+		player:Say("PDA detected: " .. pda:getDisplayName())
 		log("TEST PASSED: PDA detected")
 	else
-		player:Say("❌ No PDA found")
+		player:Say("No PDA found")
 		log("TEST FAILED: No PDA")
 	end
 
@@ -56,15 +56,15 @@ function BSTests.testBooksDetection(playerIndex)
 		return
 	end
 
-	local books = BookScanner.Books.detectBooks(player)
+	local books = BookScanner.Books.detectScannableBooks(player)
 
 	local msg = BookScanner.Config.getText("UI_BookScanner_BooksFound", #books)
 	player:Say(msg)
 
 	if #books > 0 then
-		log("✅ TEST PASSED: " .. #books .. " book(s)")
+		log("TEST PASSED: " .. #books .. " book(s)")
 	else
-		log("❌ TEST: No books")
+		log("TEST: No books")
 	end
 
 	separator()
@@ -88,10 +88,10 @@ function BSTests.testComplete(playerIndex)
 	local hasPDA = BookScanner.Core.hasPDA(player)
 
 	-- Test Books
-	local books = BookScanner.Books.detectBooks(player)
+	local books = BookScanner.Books.detectScannableBooks(player)
 
 	-- Summary
-	local message = "PDA: " .. (hasPDA and "✅" or "❌") .. " | Books: " .. #books
+	local message = "PDA: " .. (hasPDA and "YES" or "NO") .. " | Books: " .. #books
 	player:Say(message)
 	log("Result: " .. message)
 
@@ -111,9 +111,9 @@ local function onTestContextMenu(playerIndex, context, items)
 	log("Test menu - PlayerID: " .. playerID .. " (" .. userName .. ")")
 
 	-- Add test options
-	context:addOption("🔍 TEST: Detect PDA", playerIndex, BSTests.testPDADetection)
-	context:addOption("📚 TEST: Detect Books", playerIndex, BSTests.testBooksDetection)
-	context:addOption("⚡ TEST: Complete (PDA+Books)", playerIndex, BSTests.testComplete)
+	context:addOption("TEST: Detect PDA", playerIndex, BSTests.testPDADetection)
+	context:addOption("TEST: Detect Books", playerIndex, BSTests.testBooksDetection)
+	context:addOption("TEST: Complete (PDA+Books)", playerIndex, BSTests.testComplete)
 
 	log("Test options added")
 end
