@@ -1,5 +1,5 @@
 -- media/lua/client/BookScanner/BSTests.lua
--- Development tests (remove in production)
+--WARNING Development tests (remove in production)
 
 require("BookScanner/BSCore")
 require("BookScanner/BSBooks")

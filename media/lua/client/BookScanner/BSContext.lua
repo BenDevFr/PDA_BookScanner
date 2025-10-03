@@ -112,7 +112,6 @@ function BSContext.scanBook(item, player)
 end
 
 -- Add "Scan with PDA" option to books
--- Add "Scan with PDA" option to books
 function BSContext.addScanBookMenu(playerIndex, context, items)
 	local player = getSpecificPlayer(playerIndex)
 	if not player then

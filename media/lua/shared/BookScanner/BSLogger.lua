@@ -7,6 +7,7 @@ local BSLogger = {}
 BookScanner.Logger = BSLogger
 
 -- Configuration
+--TODO Make configurable via settings menu or detect if the game is in debug mode
 BSLogger.debugMode = true -- Set to false for production
 
 -- Log format helpers
