@@ -18,4 +18,12 @@ UI_FR = {
     UI_BookScanner_ConnectFailed = "Échec de connexion au PDA",
     UI_BookScanner_PDAName = "PDA de %1",
     UI_BookScanner_NoPDAPersonal = "Aucun PDA personnel trouvé. Connectez-vous d'abord à un PDA.",
+
+    -- Interface de la bibliothèque
+    UI_BookScanner_OpenLibrary = "Ouvrir la bibliothèque",
+    UI_BookScanner_LibraryTitle = "Bibliothèque PDA",
+    UI_BookScanner_NoBooks = "Aucun livre scanné",
+    UI_BookScanner_ReadBook = "Lire",
+    UI_BookScanner_ReadProgress = "%1/%2 pages",
+    UI_BookScanner_Completed = "Terminé",
 }

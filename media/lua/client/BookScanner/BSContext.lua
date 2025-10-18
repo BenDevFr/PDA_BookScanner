@@ -248,6 +248,12 @@ function BSContext.addConnectPDAMenu(playerIndex, context, items)
 					local option = context:addOption(pdaName, item, nil)
 					option.notAvailable = true
 
+					-- Add "Open Library" option
+					local libraryText = BookScanner.Config.getText("UI_BookScanner_OpenLibrary")
+					context:addOption(libraryText, item, function(pda)
+						BookScanner.UI.openLibrary(player, pda)
+					end)
+
 					-- Debug option to unbind
 					if BookScanner.Logger.debugMode then
 						context:addOption("DEBUG: Unbind PDA", item, function(pda)

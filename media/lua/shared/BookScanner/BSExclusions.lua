@@ -1,4 +1,4 @@
--- media/lua/client/BookScanner/BSExclusions.lua
+-- media/lua/shared/BookScanner/BSExclusions.lua
 
 require("BookScanner/BSLogger")
 
