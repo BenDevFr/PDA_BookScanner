@@ -73,7 +73,7 @@ function BSContext.scanBook(item, player)
 
 	-- Extract info
 	debug("Extracting book info...")
-	local bookInfo = BookScanner.Books.extractBookInfo(item)
+	local bookInfo = BookScanner.Books.extractBookInfo(item, player)
 	if not bookInfo then
 		error("Unable to extract book info")
 		return

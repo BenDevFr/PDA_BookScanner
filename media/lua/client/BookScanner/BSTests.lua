@@ -1,5 +1,5 @@
 -- media/lua/client/BookScanner/BSTests.lua
---WARNING Development tests (remove in production)
+-- Development tests (only active when debugMode is enabled)
 
 require("BookScanner/BSCore")
 require("BookScanner/BSBooks")
@@ -14,8 +14,15 @@ BookScanner.Tests = BSTests
 
 -- Local imports
 local log = BookScanner.Logger.log
+local debug = BookScanner.Logger.debug
 local separator = BookScanner.Logger.separator
 local formatPlayerLog = BookScanner.Utils.formatPlayerLog
+
+-- Early exit if debug mode is disabled
+if not BookScanner.Config.debugMode then
+	log("BSTests.lua loaded (disabled - debugMode OFF)")
+	return BSTests
+end
 
 -- Test PDA detection
 function BSTests.testPDADetection(playerIndex)
@@ -100,25 +107,36 @@ function BSTests.testComplete(playerIndex)
 	separator()
 end
 
--- Temporary test context menu
+-- Test context menu (only visible in debug mode)
 local function onTestContextMenu(playerIndex, context, items)
+	-- Double-check debug mode at runtime
+	if not BookScanner.Config.debugMode then
+		return
+	end
+
 	local player = getSpecificPlayer(playerIndex)
 	if not player then
 		return
 	end
 
 	local _, userName, playerID = BookScanner.Utils.getPlayerInfo(player)
-	log("Test menu - PlayerID: " .. playerID .. " (" .. userName .. ")")
+	debug("Test menu - PlayerID: " .. playerID .. " (" .. userName .. ")")
+
+	-- Add debug separator
+	local testHeader = context:addOption("=== DEBUG TESTS ===", nil, nil)
+	testHeader.notAvailable = true -- ← Ajoute cette ligne
 
 	-- Add test options
 	context:addOption("TEST: Detect PDA", playerIndex, BSTests.testPDADetection)
 	context:addOption("TEST: Detect Books", playerIndex, BSTests.testBooksDetection)
 	context:addOption("TEST: Complete (PDA+Books)", playerIndex, BSTests.testComplete)
 
-	log("Test options added")
+	debug("Test options added")
 end
 
--- Register test menu
+-- Register test menu only if debug mode is enabled
 Events.OnFillInventoryObjectContextMenu.Add(onTestContextMenu)
 
-log("BSTests.lua loaded")
+log("BSTests.lua loaded (debug mode ACTIVE)")
+
+return BSTests

@@ -127,15 +127,25 @@ function BSStorage.saveScannedBook(pda, bookInfo)
 		return false
 	end
 
-	-- Save book data
+	-- Save ALL book data
 	modData.scannedBooks[fullType] = {
 		fullType = bookInfo.fullType,
+		displayName = bookInfo.displayName,
 		category = bookInfo.category,
+		numberOfPages = bookInfo.numberOfPages,
+		skills = bookInfo.skills,
+		recipes = bookInfo.recipes,
+		alreadyRead = bookInfo.alreadyRead,
+		alreadyReadPages = bookInfo.alreadyReadPages,
 		timestamp = os.time(),
 	}
 
 	debug("Book saved to ModData: " .. fullType)
-	debug("Category: " .. bookInfo.category)
+	debug("  - Display name: " .. bookInfo.displayName)
+	debug("  - Category: " .. bookInfo.category)
+	debug("  - Pages: " .. bookInfo.numberOfPages)
+	debug("  - Skills: " .. #bookInfo.skills)
+	debug("  - Recipes: " .. #bookInfo.recipes)
 
 	return true
 end

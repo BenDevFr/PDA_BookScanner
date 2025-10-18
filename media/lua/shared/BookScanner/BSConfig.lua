@@ -8,6 +8,9 @@ BookScanner.Config = BookScanner.Config or {}
 BookScanner.Config.VERSION = "1.0.0"
 BookScanner.Config.MOD_ID = "HephasStalkerPDA_BookScanner"
 
+-- Debug mode (set to false for production)
+BookScanner.Config.debugMode = true -- ⚠️ SET TO FALSE FOR RELEASE
+
 -- Items
 BookScanner.Config.PDA_TYPE = "Hephas_StalkerPDA"
 
