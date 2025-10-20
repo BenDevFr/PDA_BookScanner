@@ -26,4 +26,5 @@ UI_FR = {
     UI_BookScanner_CategoryOther = "Autres"
     UI_BookScanner_Recipe = "recette"
     UI_BookScanner_Recipes = "recettes"
+    UI_BookScanner_RecipesLearned = "recettes apprises"
 }

@@ -205,27 +205,43 @@ function BSLibraryWindow:drawBookItem(y, item, alt)
     -- Skill info or recipe count
     if bookData.skills and #bookData.skills > 0 then
         local skill = bookData.skills[1]
-
-        -- Traduire le skill name
         local translatedSkillName = self.libraryWindow:getTranslatedSkillName(skill.name)
-
         local skillText = translatedSkillName .. " " .. skill.lvlMin .. "-" .. skill.lvlMax
         self:drawText(skillText, x, y + 25, 0.8, 0.8, 0.5, a, UIFont.Small)
     elseif bookData.recipes and #bookData.recipes > 0 then
-        local recipeText = #bookData.recipes .. " " ..
-            (#bookData.recipes > 1 and
-                BookScanner.Config.getText("UI_BookScanner_Recipes") or
-                BookScanner.Config.getText("UI_BookScanner_Recipe"))
+        -- Afficher le nombre de recettes avec singulier/pluriel
+        local recipeCount = #bookData.recipes
+        local recipeWord = (recipeCount > 1) and
+            BookScanner.Config.getText("UI_BookScanner_Recipes") or
+            BookScanner.Config.getText("UI_BookScanner_Recipe")
+
+        local recipeText = recipeCount .. " " .. recipeWord
         self:drawText(recipeText, x, y + 25, 0.5, 0.8, 0.8, a, UIFont.Small)
     end
 
     -- Progress
-    local progress = bookData.alreadyReadPages .. "/" .. bookData.numberOfPages .. " pages"
-    if bookData.alreadyRead then
-        progress = BookScanner.Config.getText("UI_BookScanner_Completed")
-        self:drawText(progress, x, y + 40, 0.3, 0.9, 0.3, a, UIFont.Small)
+    if bookData.isMagazine then
+        -- Magazines : afficher recettes apprises / total
+        local learnedCount = bookData.learnedRecipes and #bookData.learnedRecipes or 0
+        local totalRecipes = #bookData.recipes
+        local progress = learnedCount .. "/" .. totalRecipes .. " " ..
+            BookScanner.Config.getText("UI_BookScanner_RecipesLearned")
+
+        if bookData.alreadyRead then
+            progress = "✓ " .. BookScanner.Config.getText("UI_BookScanner_Completed")
+            self:drawText(progress, x, y + 40, 0.3, 0.9, 0.3, a, UIFont.Small)
+        else
+            self:drawText(progress, x, y + 40, 0.7, 0.7, 0.7, a, UIFont.Small)
+        end
     else
-        self:drawText(progress, x, y + 40, 0.7, 0.7, 0.7, a, UIFont.Small)
+        -- Livres normaux : afficher pages lues / total
+        local progress = bookData.alreadyReadPages .. "/" .. bookData.numberOfPages .. " pages"
+        if bookData.alreadyRead then
+            progress = "✓ " .. BookScanner.Config.getText("UI_BookScanner_Completed")
+            self:drawText(progress, x, y + 40, 0.3, 0.9, 0.3, a, UIFont.Small)
+        else
+            self:drawText(progress, x, y + 40, 0.7, 0.7, 0.7, a, UIFont.Small)
+        end
     end
 
     return y + self.itemheight

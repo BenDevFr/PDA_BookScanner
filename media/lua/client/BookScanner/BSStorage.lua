@@ -113,7 +113,6 @@ function BSStorage.saveScannedBook(pda, bookInfo)
 
 	local modData = pda:getModData()
 
-	-- Initialize scannedBooks if not exists
 	if not modData.scannedBooks then
 		modData.scannedBooks = {}
 		debug("Initialized scannedBooks table")
@@ -121,7 +120,6 @@ function BSStorage.saveScannedBook(pda, bookInfo)
 
 	local fullType = bookInfo.fullType
 
-	-- Check if already scanned
 	if modData.scannedBooks[fullType] then
 		debug("Book already in library: " .. fullType)
 		return false
@@ -132,10 +130,12 @@ function BSStorage.saveScannedBook(pda, bookInfo)
 		fullType = bookInfo.fullType,
 		displayName = bookInfo.displayName,
 		category = bookInfo.category,
-		textureName = bookInfo.textureName, -- ← Sauvegarder le nom de texture
+		textureName = bookInfo.textureName,
 		numberOfPages = bookInfo.numberOfPages,
+		isMagazine = bookInfo.isMagazine, -- ← AJOUTER
 		skills = bookInfo.skills,
 		recipes = bookInfo.recipes,
+		learnedRecipes = bookInfo.learnedRecipes, -- ← AJOUTER
 		alreadyRead = bookInfo.alreadyRead,
 		alreadyReadPages = bookInfo.alreadyReadPages,
 		timestamp = os.time(),
@@ -143,11 +143,15 @@ function BSStorage.saveScannedBook(pda, bookInfo)
 
 	debug("Book saved to ModData: " .. fullType)
 	debug("  - Display name: " .. bookInfo.displayName)
+	debug("  - Is Magazine: " .. tostring(bookInfo.isMagazine))
 	debug("  - Texture: " .. tostring(bookInfo.textureName))
 	debug("  - Category: " .. bookInfo.category)
 	debug("  - Pages: " .. bookInfo.numberOfPages)
 	debug("  - Skills: " .. #bookInfo.skills)
 	debug("  - Recipes: " .. #bookInfo.recipes)
+	if bookInfo.isMagazine then
+		debug("  - Learned recipes: " .. #bookInfo.learnedRecipes)
+	end
 
 	return true
 end
@@ -240,28 +244,62 @@ function BSStorage.syncBookProgress(pda, player)
 	local updatedCount = 0
 
 	for fullType, bookData in pairs(modData.scannedBooks) do
-		-- Get current progress from player
-		local currentPages = player:getAlreadyReadPages(fullType) or 0
-		local totalPages = bookData.numberOfPages or 0
+		if bookData.isMagazine then
+			-- Pour les magazines : vérifier les recettes apprises
+			debug("Checking magazine: " .. bookData.displayName)
+			debug("  Total recipes: " .. #bookData.recipes)
 
-		-- Check if progress changed
-		if currentPages ~= bookData.alreadyReadPages then
-			debug("Updating progress for: " .. bookData.displayName)
-			debug("  Old: " .. bookData.alreadyReadPages .. "/" .. totalPages)
-			debug("  New: " .. currentPages .. "/" .. totalPages)
+			local learnedRecipes = {}
 
-			bookData.alreadyReadPages = currentPages
-			bookData.alreadyRead = (currentPages >= totalPages)
+			for _, recipeName in ipairs(bookData.recipes) do
+				-- Utiliser isRecipeKnown avec le nom de la recette (string)
+				if player:isRecipeKnown(recipeName) then
+					table.insert(learnedRecipes, recipeName)
+					debug("  ✓ Recipe learned: " .. recipeName)
+				else
+					debug("  ✗ Recipe not learned: " .. recipeName)
+				end
+			end
 
-			updatedCount = updatedCount + 1
+			-- Vérifier si changement
+			local oldCount = bookData.learnedRecipes and #bookData.learnedRecipes or 0
+			local newCount = #learnedRecipes
+
+			if oldCount ~= newCount then
+				debug("Updating magazine progress: " .. bookData.displayName)
+				debug("  Old: " .. oldCount .. "/" .. #bookData.recipes)
+				debug("  New: " .. newCount .. "/" .. #bookData.recipes)
+
+				bookData.learnedRecipes = learnedRecipes
+				bookData.alreadyRead = (newCount == #bookData.recipes)
+
+				updatedCount = updatedCount + 1
+			end
+		else
+			-- Pour les livres normaux : vérifier les pages
+			local currentPages = player:getAlreadyReadPages(fullType) or 0
+			local totalPages = bookData.numberOfPages or 0
+
+			if currentPages ~= bookData.alreadyReadPages then
+				debug("Updating book progress: " .. bookData.displayName)
+				debug("  Old: " .. bookData.alreadyReadPages .. "/" .. totalPages)
+				debug("  New: " .. currentPages .. "/" .. totalPages)
+
+				bookData.alreadyReadPages = currentPages
+				bookData.alreadyRead = (currentPages >= totalPages)
+
+				updatedCount = updatedCount + 1
+			end
 		end
 	end
 
 	if updatedCount > 0 then
-		log("Synchronized " .. updatedCount .. " book(s) progress")
+		log("Synchronized " .. updatedCount .. " book(s)/magazine(s) progress")
 	else
-		debug("All books already up to date")
+		debug("All books/magazines already up to date")
 	end
+
+	log("Library synchronized with player's reading progress")
 end
 
 log("BSStorage.lua loaded")
