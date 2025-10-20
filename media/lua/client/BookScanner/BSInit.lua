@@ -13,24 +13,29 @@ separator()
 log("Initializing BookScanner mod v" .. BookScanner.Config.VERSION)
 separator()
 
--- Load shared utilities
+-- Load shared utilities (available on both client and server)
 log("Loading shared modules...")
 require("BookScanner/BSUtils")
+require("BookScanner/BSExclusions")
 
--- Load client modules
-log("Loading client modules...")
-require("BookScanner/BSCore")
-require("BookScanner/BSBooks")
-require("BookScanner/BSStorage")
-require("BookScanner/BSContext")
-require("BookScanner/BSReadScannedBook")
+-- Load client modules (only on client side)
+if isClient() or not isServer() then
+	log("Loading client modules...")
+	require("BookScanner/BSCore")
+	require("BookScanner/BSBooks")
+	require("BookScanner/BSStorage")
+	require("BookScanner/BSContext")
+	require("BookScanner/BSReadScannedBook")
+	require("BookScanner/BSUI")
 
--- Load tests only in debug mode
-if BookScanner.Logger.debugMode then
-	log("Debug mode active - Loading test modules...")
-	require("BookScanner/BSTests")
-else
-	log("Normal mode - Test modules disabled")
+
+	-- Load tests only in debug mode
+	if BookScanner.Config.debugMode then
+		log("Debug mode active - Loading test modules...")
+		require("BookScanner/BSTests")
+	else
+		log("Normal mode - Test modules disabled")
+	end
 end
 
 separator()

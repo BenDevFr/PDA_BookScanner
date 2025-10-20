@@ -1,29 +1,29 @@
 UI_FR = {
-    -- Messages en jeu
-    UI_BookScanner_NeedPDA = "J'ai besoin d'un PDA pour scanner ce livre.",
-    UI_BookScanner_NotScannable = "Ce n'est pas un livre scannable.",
-    UI_BookScanner_AlreadyScanned = "Ce livre est déjà dans ma bibliothèque PDA.",
-    UI_BookScanner_ScanSuccess = "Livre scanné: %s",
-    UI_BookScanner_NoBooks = "Aucun livre scannable trouvé",
-    UI_BookScanner_BooksFound = "%d livre(s) scannable(s) trouvé(s)",
+    -- Système PDA
+    UI_BookScanner_PDAName = "PDA de %1"
+    UI_BookScanner_ConnectPDA = "Se connecter au PDA"
+    UI_BookScanner_ConnectSuccess = "Connecté au PDA"
+    UI_BookScanner_ConnectFailed = "Échec de connexion au PDA"
+    UI_BookScanner_NoPDAPersonal = "Aucun PDA personnel trouvé"
 
-    -- Menu contextuel
-    UI_BookScanner_ContextScan = "Scanner avec le PDA",
-    UI_BookScanner_ContextAlreadyScanned = "Déjà scanné",
-    UI_BookScanner_ContextLibrary = "Bibliothèque (%d livres)",
-
-    -- Connexion PDA
-    UI_BookScanner_ConnectPDA = "Se connecter à ce PDA",
-    UI_BookScanner_ConnectSuccess = "Connecté au PDA",
-    UI_BookScanner_ConnectFailed = "Échec de connexion au PDA",
-    UI_BookScanner_PDAName = "PDA de %1",
-    UI_BookScanner_NoPDAPersonal = "Aucun PDA personnel trouvé. Connectez-vous d'abord à un PDA.",
+    -- Scan de livres
+    UI_BookScanner_ContextScan = "Scanner avec PDA"
+    UI_BookScanner_ContextAlreadyScanned = "Déjà scanné"
+    UI_BookScanner_ScanSuccess = "Livre scanné : %1"
+    UI_BookScanner_AlreadyScanned = "Ce livre a déjà été scanné"
+    UI_BookScanner_NotScannable = "Ce livre ne peut pas être scanné"
+    UI_BookScanner_BooksFound = "%1 livre(s) trouvé(s)"
 
     -- Interface de la bibliothèque
-    UI_BookScanner_OpenLibrary = "Ouvrir la bibliothèque",
-    UI_BookScanner_LibraryTitle = "Bibliothèque PDA",
-    UI_BookScanner_NoBooks = "Aucun livre scanné",
-    UI_BookScanner_ReadBook = "Lire",
-    UI_BookScanner_ReadProgress = "%1/%2 pages",
-    UI_BookScanner_Completed = "Terminé",
+    UI_BookScanner_OpenLibrary = "Ouvrir la bibliothèque"
+    UI_BookScanner_LibraryTitle = "Bibliothèque PDA"
+    UI_BookScanner_Close = "Fermer"
+    UI_BookScanner_Refresh = "Actualiser"
+    UI_BookScanner_Completed = "Terminé"
+    UI_BookScanner_NoBooks = "Aucun livre scanné"
+    UI_BookScanner_CategoryAllBooks = "Tous les livres"
+    UI_BookScanner_CategoryRecipes = "Recettes"
+    UI_BookScanner_CategoryOther = "Autres"
+    UI_BookScanner_Recipe = "recette"
+    UI_BookScanner_Recipes = "recettes"
 }

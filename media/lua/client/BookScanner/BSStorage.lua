@@ -132,6 +132,7 @@ function BSStorage.saveScannedBook(pda, bookInfo)
 		fullType = bookInfo.fullType,
 		displayName = bookInfo.displayName,
 		category = bookInfo.category,
+		textureName = bookInfo.textureName, -- ← Sauvegarder le nom de texture
 		numberOfPages = bookInfo.numberOfPages,
 		skills = bookInfo.skills,
 		recipes = bookInfo.recipes,
@@ -142,6 +143,7 @@ function BSStorage.saveScannedBook(pda, bookInfo)
 
 	debug("Book saved to ModData: " .. fullType)
 	debug("  - Display name: " .. bookInfo.displayName)
+	debug("  - Texture: " .. tostring(bookInfo.textureName))
 	debug("  - Category: " .. bookInfo.category)
 	debug("  - Pages: " .. bookInfo.numberOfPages)
 	debug("  - Skills: " .. #bookInfo.skills)
@@ -219,6 +221,47 @@ function BSStorage.clearLibrary(pda)
 	log("Library cleared: " .. count .. " book(s) removed")
 
 	return true
+end
+
+-- Synchronize book progress with player's actual reading progress
+function BSStorage.syncBookProgress(pda, player)
+	if not pda or not player then
+		debug("syncBookProgress: missing pda or player")
+		return
+	end
+
+	local modData = pda:getModData()
+
+	if not modData.scannedBooks then
+		debug("syncBookProgress: no scanned books")
+		return
+	end
+
+	local updatedCount = 0
+
+	for fullType, bookData in pairs(modData.scannedBooks) do
+		-- Get current progress from player
+		local currentPages = player:getAlreadyReadPages(fullType) or 0
+		local totalPages = bookData.numberOfPages or 0
+
+		-- Check if progress changed
+		if currentPages ~= bookData.alreadyReadPages then
+			debug("Updating progress for: " .. bookData.displayName)
+			debug("  Old: " .. bookData.alreadyReadPages .. "/" .. totalPages)
+			debug("  New: " .. currentPages .. "/" .. totalPages)
+
+			bookData.alreadyReadPages = currentPages
+			bookData.alreadyRead = (currentPages >= totalPages)
+
+			updatedCount = updatedCount + 1
+		end
+	end
+
+	if updatedCount > 0 then
+		log("Synchronized " .. updatedCount .. " book(s) progress")
+	else
+		debug("All books already up to date")
+	end
 end
 
 log("BSStorage.lua loaded")

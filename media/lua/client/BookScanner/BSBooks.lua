@@ -92,10 +92,21 @@ function BSBooks.extractBookInfo(item, player)
 
 	debug("Extracting info for: " .. item:getDisplayName())
 
+	-- Extraire le nom de la texture
+	local textureName = nil
+	local texture = item:getTex()
+	if texture then
+		textureName = texture:getName()
+		debug("  - Texture name: " .. tostring(textureName))
+	else
+		debug("  - getTex() returned nil")
+	end
+
 	local info = {
 		fullType = item:getFullType(),
 		displayName = item:getDisplayName(),
 		category = item:getCategory(),
+		textureName = textureName, -- ← Stocker le nom de la texture
 		numberOfPages = item:getNumberOfPages() or 0,
 		alreadyRead = false,
 		alreadyReadPages = 0,
@@ -108,7 +119,6 @@ function BSBooks.extractBookInfo(item, player)
 		local fullType = item:getFullType()
 		info.alreadyReadPages = player:getAlreadyReadPages(fullType) or 0
 
-		-- Check if fully read
 		if info.alreadyReadPages >= info.numberOfPages then
 			info.alreadyRead = true
 		end
@@ -117,16 +127,17 @@ function BSBooks.extractBookInfo(item, player)
 	end
 
 	-- Extract recipes
-	debug("Extracting recipes....")
-	local recipes = item:getTeachedRecipes()
-	if recipes then
-		for i = 0, recipes:size() - 1 do
-			table.insert(info.recipes, tostring(recipes:get(i)))
+	debug("Extracting recipes.....")
+	local recipeMap = item:getTeachedRecipes()
+	if recipeMap and not recipeMap:isEmpty() then
+		for i = 0, recipeMap:size() - 1 do
+			local recipeName = recipeMap:get(i)
+			table.insert(info.recipes, tostring(recipeName))
 		end
 	end
 
 	-- Extract skills
-	debug("Extracting skills....")
+	debug("Extracting skills.....")
 	local skillTrained = item:getSkillTrained()
 	if skillTrained then
 		local lvlMin = 0
@@ -144,22 +155,26 @@ function BSBooks.extractBookInfo(item, player)
 			lvlMax = item:getLvlMax()
 		end
 
-		table.insert(info.skills, {
-			name = tostring(skillTrained),
-			lvlMin = lvlMin,
-			lvlMax = lvlMax,
-		})
+		local skillName = tostring(skillTrained)
+
+		-- Si skillName est vide, ne pas l'ajouter
+		if skillName ~= "" then
+			table.insert(info.skills, {
+				name = skillName,
+				lvlMin = lvlMin,
+				lvlMax = lvlMax,
+			})
+		end
 	end
 
-	-- Debug log
-	debug("Info extracted: " .. info.displayName)
+	debug("Info extracted: " .. item:getDisplayName())
 	debug("  - Type: " .. info.fullType)
+	debug("  - Texture: " .. tostring(info.textureName))
 	debug("  - Pages: " .. info.numberOfPages)
 	debug("  - Already read: " .. tostring(info.alreadyRead))
 	debug("  - Pages read: " .. info.alreadyReadPages)
 	debug("  - Recipes: " .. #info.recipes)
-	if #info.skills > 0 then
-		local skill = info.skills[1]
+	for _, skill in ipairs(info.skills) do
 		debug("  - Skill: " .. skill.name .. " (" .. skill.lvlMin .. " -> " .. skill.lvlMax .. ")")
 	end
 
