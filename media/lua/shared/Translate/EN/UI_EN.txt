@@ -29,4 +29,6 @@ UI_EN = {
     UI_BookScanner_RecipesLearned = "recipes learned"
     UI_BookScanner_RecipesList = "Recipes"
     UI_BookScanner_AndXMore = "and %1 more"
+    UI_BookScanner_Read = "Read"
+    UI_BookScanner_DoubleClickToRead = "Double-click to read"
 }

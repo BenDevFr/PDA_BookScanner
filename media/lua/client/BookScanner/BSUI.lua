@@ -50,6 +50,24 @@ function BSLibraryWindow:createChildren()
     -- Populate tabs
     self:populateTabs()
 
+    -- Read button (middle-right)
+    self.readBtn = ISButton:new(
+        self.width - (btnWidth * 2) - padX - 10,
+        self.height - btnHeight - padY + 20,
+        btnWidth,
+        btnHeight,
+        BookScanner.Config.getText("UI_BookScanner_Read"),
+        self,
+        BSLibraryWindow.onReadBook
+    )
+    self.readBtn:initialise()
+    self.readBtn:setAnchorTop(false)
+    self.readBtn:setAnchorBottom(true)
+    self.readBtn:setAnchorLeft(false)
+    self.readBtn:setAnchorRight(true)
+    self.readBtn:setEnable(false) -- Disabled by default
+    self:addChild(self.readBtn)
+
     -- Close button (right side)
     self.closeBtn = ISButton:new(
         self.width - btnWidth - padX,
@@ -66,6 +84,9 @@ function BSLibraryWindow:createChildren()
     self.closeBtn:setAnchorLeft(false)
     self.closeBtn:setAnchorRight(true)
     self:addChild(self.closeBtn)
+
+    -- Store selected book
+    self.selectedBook = nil
 end
 
 function BSLibraryWindow:populateTabs()
@@ -152,6 +173,32 @@ function BSLibraryWindow:createSkillTab(skillName, books)
     list.drawBorder = true
 
     list.libraryWindow = self
+
+    -- Double-click to read book
+    list.onMouseDoubleClick = function(self, x, y)
+        if self.mouseoverselected and self.mouseoverselected > 0 then
+            local selectedItem = self.items[self.mouseoverselected]
+            if selectedItem and selectedItem.item then
+                self.libraryWindow:onBookDoubleClick(selectedItem.item)
+            end
+        end
+        return true
+    end
+
+    -- Single click handler to enable/disable Read button
+    list.onMouseDown = function(self, x, y)
+        ISScrollingListBox.onMouseDown(self, x, y)
+
+        -- Use self.selected which is automatically set by the list
+        if self.selected and self.selected > 0 and self.selected <= #self.items then
+            local selectedItem = self.items[self.selected]
+            if selectedItem and selectedItem.item then
+                self.libraryWindow:onBookSelected(selectedItem.item)
+            end
+        else
+            self.libraryWindow:onBookSelected(nil)
+        end
+    end
 
     -- Calculate max height needed for this tab (3 columns fixed)
     local maxHeight = 60 -- Default
@@ -369,6 +416,42 @@ function BSLibraryWindow:getTranslatedRecipeName(recipeName)
     return recipeName
 end
 
+function BSLibraryWindow:onBookDoubleClick(bookData)
+    if not bookData or not self.player or not self.pda then
+        debug("onBookDoubleClick: missing data")
+        return
+    end
+
+    log("Double-clicked on book: " .. bookData.displayName)
+
+    -- Start virtual reading
+    local action = BSReadScannedBook:newFromScan(self.player, bookData.fullType)
+
+    if action then
+        ISTimedActionQueue.add(action)
+        log("Reading started for: " .. bookData.displayName)
+    else
+        debug("Failed to create reading action")
+    end
+end
+
+function BSLibraryWindow:onBookSelected(bookData)
+    self.selectedBook = bookData
+
+    -- Enable/disable Read button
+    if self.readBtn then
+        self.readBtn:setEnable(bookData ~= nil)
+    end
+end
+
+function BSLibraryWindow:onReadBook()
+    if not self.selectedBook then
+        return
+    end
+
+    self:onBookDoubleClick(self.selectedBook)
+end
+
 function BSLibraryWindow:onRefresh()
     debug("Refreshing library...")
 
@@ -404,6 +487,22 @@ function BSLibraryWindow:prerender()
     end
 end
 
+function BSLibraryWindow:render()
+    ISCollapsableWindow.render(self)
+
+    -- Draw instruction text between Refresh and Read buttons
+    local text = BookScanner.Config.getText("UI_BookScanner_DoubleClickToRead")
+    local textWidth = getTextManager():MeasureStringX(UIFont.Small, text)
+
+    -- Center text between refresh and read buttons
+    local refreshRight = self.refreshBtn:getX() + self.refreshBtn:getWidth()
+    local readLeft = self.readBtn:getX()
+    local centerX = refreshRight + ((readLeft - refreshRight) / 2) - (textWidth / 2)
+    local textY = self.height - 30 - 10
+
+    self:drawText(text, centerX, textY, 0.7, 0.7, 0.7, 1, UIFont.Small)
+end
+
 function BSLibraryWindow:new(x, y, width, height, player, pda)
     local o = {}
     o = ISCollapsableWindow:new(x, y, width, height)
@@ -417,8 +516,8 @@ function BSLibraryWindow:new(x, y, width, height, player, pda)
     o.minimumWidth = 850 -- Garantit que 3 colonnes de 250px tiennent
     o.minimumHeight = 400
 
-    o.moveWithMouse = true
-    ISLayoutManager.RegisterWindow('bookScannerLibrary', ISCollapsableWindow, o)
+    -- o.moveWithMouse = true
+    -- ISLayoutManager.RegisterWindow('bookScannerLibrary', ISCollapsableWindow, o)
 
     return o
 end
